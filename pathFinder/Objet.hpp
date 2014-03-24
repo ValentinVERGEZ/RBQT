@@ -41,4 +41,4 @@ public:
 	#endif
 };
 
-#endif
+#endif	// _HEADER_OBJET_

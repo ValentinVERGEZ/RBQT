@@ -33,14 +33,12 @@ int main( int argc, char **argv )
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
-    sf::Thread joyPrintStatThread(&printJoystickStat);
     sf::Thread robotinoDriveThread(&rbqt::lleague::rec_robotino_thread,hostname);
 
     // Joystick infos
     printJoysticksInfos();
     std::cout << "Quel Joystick utiliser ? : ";
     std::cin >> usedJoystick;
-    //joyPrintStatThread.launch();
     robotinoDriveThread.launch();
 
     // Algo

@@ -26,10 +26,11 @@ $(TARGET): obj
 obj: $(SRC) $(INC)
 	$(CC) $(CFLAGS) -c $(SRC)
 
+
+#### Clean
+.PHONY: clean mrproper
 clean: 
-	rm $(OBJ)
-.PHONY: clean
+	rm -f $(OBJ)
 
 mrproper: clean
-	rm $(TARGET)
-.PHONY: mrproper
+	rm -f $(TARGET)

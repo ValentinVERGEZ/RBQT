@@ -32,4 +32,4 @@ private:
 	Point *_pointsPassage[nbPointsLignes][nbPointsColonnes];
 };
 
-#endif
+#endif	// _HEADER_MAP_

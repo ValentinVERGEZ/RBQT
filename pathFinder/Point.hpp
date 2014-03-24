@@ -38,4 +38,4 @@ public:
 	#endif
 };
 
-#endif
+#endif	// _HEADER_POINT_

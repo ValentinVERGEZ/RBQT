@@ -11,6 +11,7 @@
 	#include "rec/robotino/com/all.h"
 	#include "rec/core_lt/utils.h"
 	#include "rec/core_lt/Timer.h"
+	#include "rec/core_lt/Thread.h"
 
 	// Perso
 	#include "main.hpp"
