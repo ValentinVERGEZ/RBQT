@@ -66,7 +66,9 @@ class CompareF
 public:
     bool operator()(Point* const& a, Point* const& b) const
     {
-        return a->getF() < b->getF();
+    	signed int valFa = a->getF()*1000+((a->getLigne()*100)%100)+(a->getColonne()%100);
+    	signed int valFb = b->getF()*1000+((b->getLigne()*100)%100)+(b->getColonne()%100);
+        return (valFa < valFb);
     }
 };
 

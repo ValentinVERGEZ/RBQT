@@ -39,7 +39,8 @@ public:
 	signed int distWith(Point const& pointDistant) const;
 
 #ifdef GRAPHIC
-	int constuctShape();
+	int constructShape();
+	int reConstructShape();
 	int draw(sf::RenderWindow &w);
 #endif
 

@@ -6,7 +6,7 @@
 		setPosition(x,y);
 		setType(type);
 	#ifdef GRAPHIC
-		constuctShape();
+		constructShape();
 	#endif
 		setH(0);
 		setG(0);
@@ -22,7 +22,7 @@
 		setPosition(x,y);
 		setType(type);
 	#ifdef GRAPHIC
-		constuctShape();
+		constructShape();
 	#endif
 		setH(0);
 		setG(0);
@@ -149,7 +149,7 @@
 
 
 #ifdef GRAPHIC
-	int Point::constuctShape()
+	int Point::constructShape()
 	{
 		switch(_type)
 		{
@@ -173,6 +173,40 @@
 
 			case INTERDIT:
 				_shape = new sf::CircleShape(4,4);
+		        _shape->setFillColor(sf::Color::Black);
+		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
+			break;
+
+			default:
+				_shape = new sf::CircleShape(0);
+			break;
+		}
+
+
+		return 0;
+	}
+
+
+	int Point::reConstructShape()
+	{
+		switch(_type)
+		{
+			case LIBRE:
+		        _shape->setFillColor(sf::Color::Blue);
+		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
+			break;
+
+			case OCCUPE_AMI:
+		        _shape->setFillColor(sf::Color::Green);
+		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
+			break;
+
+			case OCCUPE_ADVERSAIRE:
+		        _shape->setFillColor(sf::Color::Red);
+		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
+			break;
+
+			case INTERDIT:
 		        _shape->setFillColor(sf::Color::Black);
 		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
 			break;

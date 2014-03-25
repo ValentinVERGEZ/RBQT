@@ -307,6 +307,19 @@
 		// }
 		// voisins.clear();
 
+
+//Création des points
+		#ifdef GRAPHIC
+		for (int i = 0; i < nbPointsLignes; ++i)
+		{
+			for (int j = 0; j < nbPointsColonnes; ++j)
+			{
+				_pointsPassage[i][j]->reConstructShape();
+			}
+		}				
+		#endif
+
+		chemin.clear();
 		std::multiset<Point*,CompareF> aEvaluer;
 		std::multiset<Point*> dejaEvalue;
 		std::vector<Point*> voisins;
@@ -319,6 +332,9 @@
 			Point *p;
 			// p = *(--(aEvaluer.end()));
 			p = *(aEvaluer.begin());
+			#ifdef GRAPHIC
+			p->_shape->setFillColor(sf::Color::Blue);
+			#endif
 
 			std::cout << "A Evaluer Contains:";
 			for (std::multiset<Point*>::iterator it=aEvaluer.begin(); it!=aEvaluer.end(); ++it )
@@ -335,6 +351,9 @@
 				Point* prec;
 				do
 				{
+					#ifdef GRAPHIC
+					p->_shape->setFillColor(sf::Color::Green);
+					#endif
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
