@@ -51,17 +51,17 @@
 		return 0;
 	}
 
-	signed int Objet::getX()
+	signed int Objet::getX() const
 	{
 		return _x;
 	}
 
-	signed int Objet::getY()
+	signed int Objet::getY() const
 	{
 		return _y;
 	}
 
-	int Objet::getPhi()
+	int Objet::getPhi() const
 	{
 		return _phi;
 	}

@@ -17,9 +17,9 @@ public:
 	int setPosition(signed int x, signed int y);
 	int setPosition(signed int x, signed int y, int phi);
 	int setType(typeObjet type);
-	signed int getX();
-	signed int getY();
-	int getPhi();
+	signed int getX() const;
+	signed int getY() const;
+	int getPhi() const;
 #ifdef GRAPHIC
 	int constuctShape();
 	int draw(sf::RenderWindow &w);
