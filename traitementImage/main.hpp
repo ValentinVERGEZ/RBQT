@@ -9,7 +9,7 @@
     #ifdef USE_ROBOTINO
         #include "robotino.hpp"
 	#endif // USE_ROBOTINO
-    #include "fonction_traitementImage.cpp"    
+    #include "fonction_traitementImage.hpp"    
 
 
 /* Variables globales */

@@ -20,11 +20,41 @@
 		- cv.h contient les structures et fonctions de manipulation d'images
 		- highgui.h contient les fonctions d'affichage des images
 	*/
-	#include <cv.h>
-	#include <highgui.hpp>
-
     #include <opencv2/core/core.hpp>
     #include <opencv2/imgproc/imgproc.hpp>
+	#include <opencv2/opencv.hpp>
+	#include <opencv2/highgui/highgui.hpp>
+
+
+
+    /* VARIABLES GLOBALES */
+    // Valeurs du seuillage HSV, définie initialement aux valeurs extrêmes
+    // Seront changées par l'utilisation de trackbars ou du clique souris
+    #define HSV_MIN 0
+    #define HSV_MAX 255
+    extern int H_MIN;
+    extern int H_MAX;
+    extern int S_MIN;
+    extern int S_MAX;
+    extern int V_MIN;
+    extern int V_MAX;
+
+    // init varialbes of Color tracked and our tolerance towards it
+    extern int h , s, v, TOLERANCE, TOLERANCE_V; //TOLERANCE_V la tolérance niveau luminosité
+
+
+    //default capture width and height
+    extern const int FRAME_WIDTH;
+    extern const int FRAME_HEIGHT;
+    //max number of objects to be detected in frame
+    extern const int MAX_NUM_OBJECTS;
+    //minimum and maximum object area
+    extern const int MIN_OBJECT_AREA;
+    extern const int MAX_OBJECT_AREA;
+
+
+    extern const std::string trackbarWindowName;
+
 
 /* Prototypes */
 // ------------------------------- UTILS ---------------------------- 

@@ -65,7 +65,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
     cvNamedWindow("Flux Video + Tracking", CV_WINDOW_AUTOSIZE);
 
     // Association d'une fonction de callBack aux events de la souris sur la fenetre principale
-    cv::setMouseCallback("Flux Video + Tracking", getObjectColor, &imgMat);
+    // cv::setMouseCallback("Flux Video + Tracking", getObjectColor, &imgMat);
 
     // Boucle (touche 'q' pour quitter)
     do{

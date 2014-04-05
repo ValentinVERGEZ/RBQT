@@ -2,7 +2,7 @@
 	## Compiler options
 	CC = clang++
 	# CC = g++		
-	CFLAGS = -Wall
+	CFLAGS = #-Wall
 	TARGET = testTraitementImage
 
 	## Sources
@@ -17,8 +17,8 @@
 	INC += fonction_traitementImage.hpp
 
 	## For OpencCV lib
-	INC_PATH += -I/usr/include/opencv2/highgui -I/usr/include/opencv  
-	LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml 
+	INC_PATH +=
+	LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml
 	LIBS += -lopencv_video -lopencv_features2d
 	LIBS += -lopencv_calib3d -lopencv_objdetect -lopencv_legacy -lopencv_flann
 
