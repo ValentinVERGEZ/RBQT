@@ -24,11 +24,11 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
 /* Environment */
     // Lecture touche clavier pour interrompre le programme
     char c;
-    // Utiles à al recherche d'objet
+    // Utiles à la recherche d'objet
     int nbPixels;
     int x,y;
     // Images
-    cv::Mat frame,imgResult;
+    cv::Mat frame,imgResult,imgRGB;
 
     // Création de l'image à traiter dans les deux cas :
     //  - Cas de l'image en provenance du robotino
@@ -114,6 +114,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
             printf("L'image fait %dx%d pixels et possède %d canaux (couleurs)\n",imgMat.size().width,imgMat.size().height,imgMat.channels()); 
             
             // Affichage de l'image venant de la caméra
+            std::cout << "Affichage Flux Camera (img Mat)" << std::endl;
             imshow("Flux caméra (img Mat)", imgMat);
             #ifdef USE_ROBOTINO
                 cvShowImage("Flux caméra (img Ipl)", img);
@@ -122,24 +123,31 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
 
 
         // Convertion de l'image en RGB en BGR
-        cvtColor(imgMat, imgMat, CV_RGB2BGR);
+        cvtColor(imgMat, imgRGB, CV_RGB2BGR);
 
         // Copie de l'image récupérée permettant d'en faire ce que l'on veut
-        frame = imgMat.clone();
+        frame = imgRGB.clone();
 
         // Application d'un filtre median
         medianfilter(frame); //pour atténuer le bruit
         // Debug sur l'image filtrée
         #ifdef DEBUG       
             // Affichage de l'image filtrée
+            std::cout << "Affichage Flux Apres Filtrage (img Mat)" << std::endl;
             imshow("Flux après filtrage", frame);
         #endif  // DEBUG
 
         // Seuillage HSV de l'image (binarisation)
         binarisation(frame,&nbPixels);
+
+        #ifdef DEBUG
+            std::cout << "DEBUG : Sortie binarisation " << std::endl;
+        #endif
+
         // Debug sur l'image seuillée (binarisée)
         #ifdef DEBUG       
             // Affichage de l'image seuillée
+            std::cout << "Affichage Flux Apres Seuillage (img Mat)" << std::endl;
             imshow("Flux après seuillage", frame);
         #endif  // DEBUG
 
@@ -147,10 +155,6 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
             // Libération de la ressource image
             imgUsed = false;
         #endif // USE_ROBOTINO
-
-        #ifdef DEBUG
-            std::cout << "DEBUG : Sortie binarisation " << std::endl;
-        #endif
 
         // Operation morphologique sur l'image binaire (ouvertures/fermetures)
         morphOps(frame);
@@ -162,7 +166,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
         
         // Tracking d'un objet à partir d'une image seuillée (binarisée)
             // ImgResult est une copie du flux video à laquelle on ajoute le résultat du tracking
-            imgResult = imgMat.clone();
+            imgResult = imgRGB.clone();
         trackFilteredObject(x,y,frame,imgResult);
         
         // Affichage du flux video et du résultat du tracking

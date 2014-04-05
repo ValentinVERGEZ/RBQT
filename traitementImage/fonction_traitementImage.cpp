@@ -168,6 +168,10 @@
         int sommeX = 0, sommeY = 0;
         *nbPixels = 0;
 
+        #ifdef DEBUG
+            std::cout << "DEBUG :Entree binarisation" << std::endl;
+        #endif
+
         // Create the mask &initialize it to white (no color detected)
         binary = cvCreateImage(image.size(), IPL_DEPTH_8U, 1);
         // Create the hsv image
@@ -175,7 +179,14 @@
         //Conversion from BGR to HSV
         cv::cvtColor(image,hsv,CV_BGR2HSV);
         // We create the mask
-        inRange(hsv,cv::Scalar(H_MIN,S_MIN,V_MIN),cv::Scalar(H_MAX,S_MAX,V_MAX),binary);
+        #ifdef DEBUG
+            std::cout << "DEBUG : Seuillage " << std::endl;
+        #endif
+        //cv::inRange(hsv,cv::Scalar(H_MIN,S_MIN,V_MIN),cv::Scalar(H_MAX,S_MAX,V_MAX),binary);      
+        #ifdef DEBUG
+            std::cout << "DEBUG : Sortie seuillage " << std::endl;
+        #endif
+
    
         #ifdef DEBUG
         std::cout << "binary width " << binary.rows << std::endl;
