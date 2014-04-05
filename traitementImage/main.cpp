@@ -54,7 +54,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
         cv::Mat imgMat = cv::Mat(img,true); // true : fait une copie de img plutôt que de passer par des pointeurs
     #else
         // Création d'une image vierge
-        cv::Mat imgMat=cv::Mat();
+        cv::Mat imgMat= cv::imread("./imgOrangeObject.jpg");
     #endif // USE_ROBOTINO
 
 /* Algo */
@@ -105,13 +105,13 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
             imgMat=cv::Mat(img,true); // true : fait une copie de img plutôt que de passer par des pointeurs 
         #else
             // Mise à jours de notre image de tracking artificielle 
-            imgMat=cv::Mat();
+            // imgMat=cv::Mat();
         #endif // USE_ROBOTINO
    
         // Debug sur l'image de base
         #ifdef DEBUG       
             // Informations sur l'image
-            printf("L'image fait %dx%d pixels et possède %d canaux (couleurs)\n",img->width,img->height,img->nChannels); 
+            printf("L'image fait %dx%d pixels et possède %d canaux (couleurs)\n",imgMat.size().width,imgMat.size().height,imgMat.channels()); 
             
             // Affichage de l'image venant de la caméra
             imshow("Flux caméra (img Mat)", imgMat);
