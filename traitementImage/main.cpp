@@ -122,8 +122,8 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
         #endif  // DEBUG
 
 
-        // Convertion de l'image en RGB en BGR
-        cvtColor(imgMat, imgRGB, CV_RGB2BGR);
+        // Convertion de l'image en RGB
+        cvtColor(imgMat, imgRGB, CV_BGR2RGB);
 
         // Copie de l'image récupérée permettant d'en faire ce que l'on veut
         frame = imgRGB.clone();

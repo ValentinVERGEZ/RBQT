@@ -182,7 +182,7 @@
         #ifdef DEBUG
             std::cout << "DEBUG : Seuillage " << std::endl;
         #endif
-        //cv::inRange(hsv,cv::Scalar(H_MIN,S_MIN,V_MIN),cv::Scalar(H_MAX,S_MAX,V_MAX),binary);      
+        cv::inRange(hsv,cv::Scalar(H_MIN,S_MIN,V_MIN),cv::Scalar(H_MAX,S_MAX,V_MAX),binary);      
         #ifdef DEBUG
             std::cout << "DEBUG : Sortie seuillage " << std::endl;
         #endif
