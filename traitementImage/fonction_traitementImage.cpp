@@ -177,7 +177,7 @@
         // Create the hsv image
         hsv = image.clone();
         //Conversion from BGR to HSV
-        cv::cvtColor(image,hsv,CV_RGB2HSV);
+        cv::cvtColor(image,hsv,CV_BGR2HSV);
         // We create the mask
         #ifdef DEBUG
             std::cout << "DEBUG : Seuillage " << std::endl;
@@ -230,8 +230,8 @@
         static int XSaved, YSaved;
 
         // Get the hsv image
-            hsv = imgRGB.clone();
-            cv::cvtColor(imgRGB, hsv, CV_BGR2HSV);
+            hsv = imgBGR.clone();
+            cv::cvtColor(imgBGR, hsv, CV_BGR2HSV);
             nbTotPix = 0; //nombre total de pixel de la région choisie
             uint8_t* pixelPtr = (uint8_t*)hsv.data;
 

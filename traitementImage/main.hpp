@@ -19,5 +19,5 @@
         extern bool imgUsed;
         extern bool imgRequested;
     #endif // USE_ROBOTINO
-    extern cv::Mat imgRGB;
+    extern cv::Mat imgBGR;
 #endif // _MAIN_HEADER_

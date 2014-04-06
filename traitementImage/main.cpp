@@ -18,7 +18,7 @@
         bool imgRequested;
     #endif // USE_ROBOTINO
 
-        cv::Mat imgRGB;
+        cv::Mat imgBGR;
 
 /* ------------------------- FONCTION MAIN ---------------------------*/
 int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va tourner le programme
@@ -104,9 +104,14 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
 
             // On convertit le type IplImage en Mat pour pouvoir travailler en C++. De plus, IplImage est osbolete
             imgMat=cv::Mat(img,true); // true : fait une copie de img plutôt que de passer par des pointeurs 
+
+            // Convertion de l'image en RGB
+            cvtColor(imgMat, imgBGR, CV_BGR2RGB);
         #else
             // Mise à jours de notre image de tracking artificielle 
             // imgMat=cv::Mat();
+            // L'image est déjà en BGR, on fait juste un clone
+            imgBGR = imgMat.clone();
         #endif // USE_ROBOTINO
    
         // Debug sur l'image de base
@@ -122,12 +127,8 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
             #endif // USE_ROBOTINO
         #endif  // DEBUG
 
-
-        // Convertion de l'image en RGB
-        cvtColor(imgMat, imgRGB, CV_BGR2RGB);
-
         // Copie de l'image récupérée permettant d'en faire ce que l'on veut
-        frame = imgRGB.clone();
+        frame = imgBGR.clone();
 
         // Application d'un filtre median
         medianfilter(frame); //pour atténuer le bruit
@@ -167,7 +168,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
         
         // Tracking d'un objet à partir d'une image seuillée (binarisée)
             // ImgResult est une copie du flux video à laquelle on ajoute le résultat du tracking
-            imgResult = imgMat.clone();
+            imgResult = imgBGR.clone();
         trackFilteredObject(x,y,frame,imgResult);
         
         // Affichage du flux video et du résultat du tracking
