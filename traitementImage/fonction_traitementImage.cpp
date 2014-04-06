@@ -30,6 +30,102 @@
 
 
 // ------------------------------- UTILS ---------------------------- 
+hsv rgb2hsv(rgb in)
+{
+    hsv         out;
+    double      min, max, delta;
+
+    min = std::min(in.r,in.g);
+    min = std::min(min,in.b);
+
+    max = std::max(in.r,in.g);
+    max = std::max(max,in.b);
+
+    out.v = max;                                // v
+    delta = max - min;
+    if( max > 0.0 ) {
+        out.s = (delta / max);                  // s
+    } else {
+        // r = g = b = 0                        // s = 0, v is undefined
+        out.s = 0.0;
+        out.h = NAN;                            // its now undefined
+        return out;
+    }
+    if( in.r >= max )                           // > is bogus, just keeps compilor happy
+        out.h = ( in.g - in.b ) / delta;        // between yellow & magenta
+    else
+    if( in.g >= max )
+        out.h = 2.0 + ( in.b - in.r ) / delta;  // between cyan & yellow
+    else
+        out.h = 4.0 + ( in.r - in.g ) / delta;  // between magenta & cyan
+
+    out.h *= 60.0;                              // degrees
+
+    if( out.h < 0.0 )
+        out.h += 360.0;
+
+    return out;
+}
+
+
+rgb hsv2rgb(hsv in)
+{
+    double      hh, p, q, t, ff;
+    long        i;
+    rgb         out;
+
+    if(in.s <= 0.0) {       // < is bogus, just shuts up warnings
+        out.r = in.v;
+        out.g = in.v;
+        out.b = in.v;
+        return out;
+    }
+    hh = in.h;
+    if(hh >= 360.0) hh = 0.0;
+    hh /= 60.0;
+    i = (long)hh;
+    ff = hh - i;
+    p = in.v * (1.0 - in.s);
+    q = in.v * (1.0 - (in.s * ff));
+    t = in.v * (1.0 - (in.s * (1.0 - ff)));
+
+    switch(i) {
+    case 0:
+        out.r = in.v;
+        out.g = t;
+        out.b = p;
+        break;
+    case 1:
+        out.r = q;
+        out.g = in.v;
+        out.b = p;
+        break;
+    case 2:
+        out.r = p;
+        out.g = in.v;
+        out.b = t;
+        break;
+
+    case 3:
+        out.r = p;
+        out.g = q;
+        out.b = in.v;
+        break;
+    case 4:
+        out.r = t;
+        out.g = p;
+        out.b = in.v;
+        break;
+    case 5:
+    default:
+        out.r = in.v;
+        out.g = p;
+        out.b = q;
+        break;
+    }
+    return out;     
+}
+
     void on_trackbar( int, void* ){
         //This function gets called whenever a
         // trackbar position is changed
@@ -156,6 +252,44 @@
 
     }
 
+    void drawColorRect(cv::Mat &frame){
+        float b,g,r;
+        float H,S,V;
+        H = (H_MAX + H_MIN)/2;
+        S = (S_MAX + S_MIN)/2;
+        V = (V_MAX + V_MIN)/2;
+
+        #ifdef DEBUG
+            std::cout << "HSV : (" << H << "," << S << "," << V << ")" << std::endl;
+        #endif // DEBUG
+
+        H = H * 360 / 255;
+        S = S / 255;
+        V = V / 255;
+
+        #ifdef DEBUG
+            std::cout << "HSV2 : (" << H << "," << S << "," << V << ")" << std::endl;
+        #endif // DEBUG
+
+        hsv HSV = {H,S,V};
+
+        #ifdef DEBUG
+            std::cout << "HSV3 : (" << HSV.h << "," << HSV.s << "," << HSV.v << ")" << std::endl;
+        #endif // DEBUG
+
+        rgb RGB = hsv2rgb(HSV);
+
+        r = RGB.r * 255;
+        g = RGB.g * 255;
+        b = RGB.b * 255;
+
+        #ifdef DEBUG
+            std::cout << "RGB : (" << r << "," << g << "," << b << ")" << std::endl;
+        #endif
+
+        rectangle(frame,cv::Point(0,0),cv::Point(20,20),cv::Scalar(b,g,r),CV_FILLED);
+    }
+
     // ---------------------------- COLOR TREATEMENT -------------------------------
     /*
      * Transform the image into a two colored image, one color for the color we want to track, another color for the others colors
@@ -220,6 +354,7 @@
      * Recupération de la couleur d'un pixel par clique de la souris 
      */
     void getObjectColor( int event, int x, int y, int flags, void *param) {
+
         // Vars
         CvScalar pixel;
         cv::Mat hsv;
@@ -235,13 +370,26 @@
             nbTotPix = 0; //nombre total de pixel de la région choisie
             uint8_t* pixelPtr = (uint8_t*)hsv.data;
 
+    #ifdef DEBUG
+        std::cout << "CallBack Souris" << std::endl;
+        if(event == CV_EVENT_LBUTTONDOWN)
+        std::cout << "\t DOWN" << std::endl;
+        if(event == CV_EVENT_LBUTTONUP)
+        std::cout << "\t UP" << std::endl;
+    #endif // DEBUG
+
     switch(event)
        {
         //Recup x et y du pixel: XPixelMin et YPixelMin au clique
         case  CV_EVENT_LBUTTONDOWN:
-            pixel = hsv.at<cv::Vec3b>(x, y);
+            pixel = hsv.at<cv::Vec3b>(y, x);
             XSaved = x;
             YSaved = y;
+        #ifdef DEBUG
+            std::cout << "DEBUG : getObjectColor First Values :" << std::endl;
+            std::cout << "\t HSV(" << pixel.val[0] << "," << pixel.val[1] << "," << pixel.val[2] << ")" << std::endl;
+        #endif // DEBUG
+
         break;
 
         // Au relachement XPixelMax et YPixelMax
@@ -254,12 +402,15 @@
     //sommes des valeurs HSV des pixels pour faire une moyenne
     int hSum = 0, sSum = 0, vSum = 0;
 
+    #ifdef DEBUG
+        std::cout << "DEBUG : getObjectColor FOR" << std::endl;
+    #endif // DEBUG
     for (int i = XPixelMin; i <= XPixelMax; ++i)
     {
         for (int j = YPixelMin; j <= YPixelMax; ++j)
         {
             // Get the selected pixel
-            pixel = hsv.at<cv::Vec3b>(i, j);
+            pixel = hsv.at<cv::Vec3b>(j, i);
             // Change the value of the tracked color with the color of the selected pixel
             hSum = hSum+(int)pixel.val[0];
             sSum = sSum+(int)pixel.val[1];
@@ -267,11 +418,23 @@
         }
     }
     
-    nbTotPix=((YPixelMax-YPixelMin)*(XPixelMax-XPixelMin));
+    #ifdef DEBUG
+        std::cout << "DEBUG : getObjectColor END FOR" << std::endl;
+        std::cout << "Ymin : " << YPixelMin << " Ymax : " << YPixelMax << std::endl;
+        std::cout << "Xmin : " << XPixelMin << " Xmax : " << XPixelMax << std::endl;
+    #endif // DEBUG
+
+    nbTotPix=((YPixelMax-YPixelMin+1)*(XPixelMax-XPixelMin+1));    
+    #ifdef DEBUG
+        std::cout << "DEBUG : Avant calculs floattans. nbTotPix : " << nbTotPix << std::endl;
+    #endif // DEBUG
     // Change the value of the tracked color with the color of the selected pixel area
     h = hSum/nbTotPix;
     s = sSum/nbTotPix;
     v = vSum/nbTotPix;
+    #ifdef DEBUG
+        std::cout << "DEBUG : Après calculs floattans" << std::endl;
+    #endif // DEBUG
     std::cout << "h   " << h<<"hSum   " << hSum << std::endl;
     std::cout << "s   " << s<<"sSum   " << sSum << std::endl;
     std::cout << "v   " << v<<"vSum   " << vSum << std::endl;

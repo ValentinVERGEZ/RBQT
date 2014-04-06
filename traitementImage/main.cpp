@@ -56,6 +56,8 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
     #else
         // Création d'une image vierge
         cv::Mat imgMat= cv::imread("./imgOrangeObject.jpg");
+        // cv::Mat imgMat= cv::imread("./color-spectrum.jpg");
+        // cv::Mat imgMat= cv::imread("./white.png");
     #endif // USE_ROBOTINO
 
 /* Algo */
@@ -171,7 +173,8 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
             imgResult = imgBGR.clone();
         trackFilteredObject(x,y,frame,imgResult);
         
-        // Affichage du flux video et du résultat du tracking
+        // Affichage du flux video et du résultat du tracking + Affichga de la couleur seuillée
+        drawColorRect(imgResult);
         imshow("Flux Video + Tracking", imgResult);       
 
         // Mise à jour des trackBars
