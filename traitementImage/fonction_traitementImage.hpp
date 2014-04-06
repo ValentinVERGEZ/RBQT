@@ -9,22 +9,22 @@
     #include <string>
     #include <math.h>
     #include <vector>
+    #include <algorithm>
+// OpenCV
+    /* Les deux bibliothèques nécessaires d'opencv :
+        - cv.h contient les structures et fonctions de manipulation d'images
+        - highgui.h contient les fonctions d'affichage des images
+    */
+    #include <opencv2/core/core.hpp>
+    #include <opencv2/imgproc/imgproc.hpp>
+    #include <opencv2/opencv.hpp>
+    #include <opencv2/highgui/highgui.hpp>
 
     // Perso
     #ifdef USE_ROBOTINO
         #include "robotino.hpp"
 	#endif // USE_ROBOTINO
-
-	// OpenCV
-	/* Les deux bibliothèques nécessaires d'opencv :
-		- cv.h contient les structures et fonctions de manipulation d'images
-		- highgui.h contient les fonctions d'affichage des images
-	*/
-    #include <opencv2/core/core.hpp>
-    #include <opencv2/imgproc/imgproc.hpp>
-	#include <opencv2/opencv.hpp>
-	#include <opencv2/highgui/highgui.hpp>
-
+    #include "main.hpp"
 
 
     /* VARIABLES GLOBALES */

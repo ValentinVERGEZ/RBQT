@@ -13,7 +13,7 @@
     int V_MAX = HSV_MAX;
 
     // init varialbes of Color tracked and our tolerance towards it
-    int h = 0, s = 0, v = 0, TOLERANCE = 50, TOLERANCE_V = 100; //TOLERANCE_V la tolérance niveau luminosité
+    int h = 0, s = 0, v = 0, TOLERANCE = 10, TOLERANCE_V = 100; //TOLERANCE_V la tolérance niveau luminosité
 
 
     //default capture width and height
@@ -22,7 +22,7 @@
     //max number of objects to be detected in frame
     const int MAX_NUM_OBJECTS=50;
     //minimum and maximum object area
-    const int MIN_OBJECT_AREA = 30*30;
+    const int MIN_OBJECT_AREA = 20*20;
     const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
 
 
@@ -177,7 +177,7 @@
         // Create the hsv image
         hsv = image.clone();
         //Conversion from BGR to HSV
-        cv::cvtColor(image,hsv,CV_BGR2HSV);
+        cv::cvtColor(image,hsv,CV_RGB2HSV);
         // We create the mask
         #ifdef DEBUG
             std::cout << "DEBUG : Seuillage " << std::endl;
@@ -187,7 +187,6 @@
             std::cout << "DEBUG : Sortie seuillage " << std::endl;
         #endif
 
-   
         #ifdef DEBUG
         std::cout << "binary width " << binary.rows << std::endl;
         std::cout << "binary height " << binary.cols << std::endl;
@@ -212,17 +211,121 @@
             return cvPoint(-1, -1);
     }
 
+
+
+
+
+
     /*
      * Recupération de la couleur d'un pixel par clique de la souris 
      */
-    void getObjectColor(int event, int x, int y, int flags, void *param) {
-        // cv::Mat & image, 
+    void getObjectColor( int event, int x, int y, int flags, void *param) {
         // Vars
         CvScalar pixel;
         cv::Mat hsv;
+        // Pour évaluer le rectangle nous permettant de selectionner une couleur moyenne
+        int XPixelMin=0, XPixelMax=0;
+        int YPixelMin=0, YPixelMax=0;
+        int nbTotPix=0;
+        static int XSaved, YSaved;
+
+        // Get the hsv image
+            hsv = imgRGB.clone();
+            cv::cvtColor(imgRGB, hsv, CV_BGR2HSV);
+            nbTotPix = 0; //nombre total de pixel de la région choisie
+            uint8_t* pixelPtr = (uint8_t*)hsv.data;
+
+    switch(event)
+       {
+        //Recup x et y du pixel: XPixelMin et YPixelMin au clique
+        case  CV_EVENT_LBUTTONDOWN:
+            pixel = hsv.at<cv::Vec3b>(x, y);
+            XSaved = x;
+            YSaved = y;
+        break;
+
+        // Au relachement XPixelMax et YPixelMax
+        case  CV_EVENT_LBUTTONUP:
+            XPixelMin = std::min(XSaved,x);
+            XPixelMax = std::max(XSaved,x);
+            YPixelMin = std::min(YSaved,y);
+            YPixelMax = std::max(YSaved,y);
+       
+    //sommes des valeurs HSV des pixels pour faire une moyenne
+    int hSum = 0, sSum = 0, vSum = 0;
+
+    for (int i = XPixelMin; i <= XPixelMax; ++i)
+    {
+        for (int j = YPixelMin; j <= YPixelMax; ++j)
+        {
+            // Get the selected pixel
+            pixel = hsv.at<cv::Vec3b>(i, j);
+            // Change the value of the tracked color with the color of the selected pixel
+            hSum = hSum+(int)pixel.val[0];
+            sSum = sSum+(int)pixel.val[1];
+            vSum = vSum+(int)pixel.val[2]; 
+        }
+    }
+    
+    nbTotPix=((YPixelMax-YPixelMin)*(XPixelMax-XPixelMin));
+    // Change the value of the tracked color with the color of the selected pixel area
+    h = hSum/nbTotPix;
+    s = sSum/nbTotPix;
+    v = vSum/nbTotPix;
+    std::cout << "h   " << h<<"hSum   " << hSum << std::endl;
+    std::cout << "s   " << s<<"sSum   " << sSum << std::endl;
+    std::cout << "v   " << v<<"vSum   " << vSum << std::endl;
+
+    // Reglage des niveaux
+    H_MIN = h - TOLERANCE;
+    S_MIN = s - TOLERANCE;
+    V_MIN = v - TOLERANCE_V;
+    H_MAX = h + TOLERANCE;
+    S_MAX = s + TOLERANCE;
+    V_MAX = v + TOLERANCE_V;
+
+    // Protection pour ne pas sortir des valeurs limites
+    H_MIN = ((H_MIN < HSV_MIN)?HSV_MIN:H_MIN);
+    S_MIN = ((S_MIN < HSV_MIN)?HSV_MIN:S_MIN);
+    V_MIN = ((V_MIN < HSV_MIN)?HSV_MIN:V_MIN);
+    H_MAX = ((H_MAX > HSV_MAX)?HSV_MAX:H_MAX);
+    S_MAX = ((S_MAX > HSV_MAX)?HSV_MAX:S_MAX);
+    V_MAX = ((V_MAX > HSV_MAX)?HSV_MAX:V_MAX);
+
+    break;
+    }
+    
+}
 
 
-        if(event == CV_EVENT_LBUTTONUP) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ANCIENNE VERSION FONCTIONNELLE
+
+
+
+    /*
+     * Recupération de la couleur d'un pixel par clique de la souris 
+     */
+    // void getObjectColor(int event, int x, int y, int flags, void *param) {
+    //     // cv::Mat & image, 
+    //     // Vars
+    //     CvScalar pixel;
+    //     cv::Mat hsv;
+
+
+    //     if(event == CV_EVENT_LBUTTONUP) {
 
 /*tests*/
 /*
@@ -309,9 +412,12 @@
         
             // // Release the memory of the hsv image
             //     cvReleaseImage(&hsv);
-        }
-    }
+    //     }
+    // }
     
+
+
+
     /*
      * Traque l'objet voulu en fonction de sa teinte HSV et de la taille choisie (OBJECT_AREA) 
      * et marquage de celui-ci

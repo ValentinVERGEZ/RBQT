@@ -18,6 +18,8 @@
         bool imgRequested;
     #endif // USE_ROBOTINO
 
+        cv::Mat imgRGB;
+
 /* ------------------------- FONCTION MAIN ---------------------------*/
 int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va tourner le programme
 {
@@ -28,8 +30,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
     int nbPixels;
     int x,y;
     // Images
-    cv::Mat frame,imgResult,imgRGB;
-
+    cv::Mat frame,imgResult;
     // Création de l'image à traiter dans les deux cas :
     //  - Cas de l'image en provenance du robotino
     //  - Cas de l'image de tracking artificielle
@@ -65,7 +66,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
     cvNamedWindow("Flux Video + Tracking", CV_WINDOW_AUTOSIZE);
 
     // Association d'une fonction de callBack aux events de la souris sur la fenetre principale
-    // cv::setMouseCallback("Flux Video + Tracking", getObjectColor, &imgMat);
+    cv::setMouseCallback("Flux Video + Tracking", getObjectColor, &imgMat);
 
     // Boucle (touche 'q' pour quitter)
     do{
@@ -166,7 +167,7 @@ int main( int argc, char **argv ) //argv l'adresse IP du robotino sur lequel va 
         
         // Tracking d'un objet à partir d'une image seuillée (binarisée)
             // ImgResult est une copie du flux video à laquelle on ajoute le résultat du tracking
-            imgResult = imgRGB.clone();
+            imgResult = imgMat.clone();
         trackFilteredObject(x,y,frame,imgResult);
         
         // Affichage du flux video et du résultat du tracking
